@@ -1,0 +1,159 @@
+html, body {
+  height: 100%;
+}
+
+body {
+      background-image: url('https://t4.ftcdn.net/jpg/01/26/92/35/360_F_126923573_vuICujKVykjjustJkDYq8H4UDf69kxBW.jpg') ;
+      background-size: cover;
+  font-family: 'Oswald', sans-serif;
+
+}
+
+h1 {
+  font-size: 8vw;
+  top: 10%;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  font-weight: 900;
+}
+
+
+.wrapper {
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.wrapper h1 {
+  color: #b27300 ;
+  text-transform: uppercase;
+  width: 100%;
+  text-align: center;
+  text-shadow: -1px -1px 0 #3e2e6a, 1px -1px 0 #3e2e6a, -1px 1px 0 #3e2e6a, 1px 1px 0 #3e2e6a;
+}
+
+.wrapper h1:after {
+  content: attr(data-heading);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  overflow: hidden;
+  color: #ffa500;
+  transform: translate(0.4vw, 0.3vh);
+  mix-blend-mode: darken;
+  text-align: center;
+  width: 100%;
+  text-shadow: 1px 0px 0px #3e2e6a, 0px 1px 0px #130b52, 2px 1px 0px #3e2e6a, 1px 2px 0px #130b52, 3px 2px 0px #3e2e6a, 2px 3px 0px #130b52, 4px 3px 0px #3e2e6a, 3px 4px 0px #130b52, 5px 4px 0px #3e2e6a, 4px 5px 0px #130b52, 6px 5px 0px #3e2e6a, 5px 6px 0px #130b52, 7px 6px 0px #3e2e6a;
+}
+
+
+.accueil-texte {
+position: absolute;
+  font-size: 4vw;
+  width: 100%;
+  margin: auto;
+  height: 100%;
+  color: #f3576c;
+  text-transform: uppercase;
+  width: 100%;
+    top: 25%;
+      padding: 0px;
+  text-align: center;
+  text-shadow: -1px -1px 0 #3e2e6a, 1px -1px 0 #3e2e6a, -1px 1px 0 #3e2e6a, 1px 1px 0 #3e2e6a;
+  /*position: absolute;
+  color: blue;
+  width: 70%;
+  top: 10%;
+  margin: auto;
+  padding: 0px;
+  background-color: transparent;
+  text-align: center;
+  font-family: Futura;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #393939;
+  background: #393939;
+  font-family: 16px;
+  letter-spacing: 2px;*/
+
+}
+
+.accueil-serie {
+  position: absolute;
+  font-size: 2vw;
+  width: 100%;
+  margin: auto;
+  height: 100%;
+  color: #f3576c;
+  text-transform: uppercase;
+  width: 100%;
+    top: 40%;
+      padding: 0px;
+  text-align: center;
+  text-shadow: -1px -1px 0 #3e2e6a, 1px -1px 0 #3e2e6a, -1px 1px 0 #3e2e6a, 1px 1px 0 #3e2e6a;
+
+}
+
+
+.accueil-start {
+  position: absolute;
+  width: 100%;
+  top: 70%;
+  margin: auto;
+  padding: 0px;
+  background-color: transparent;
+  text-align: center;
+}
+
+/*
+.hero {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero::before {
+      content: "";
+      background-image: url('https://t4.ftcdn.net/jpg/01/26/92/35/360_F_126923573_vuICujKVykjjustJkDYq8H4UDf69kxBW.jpg') ;
+      background-size: cover;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.75;
+}
+*/
+
+.center-reponse {
+  font-size: 2vw;
+  position: absolute;
+  width: 100%;
+  top: 5%;
+  margin: auto;
+  padding: 0px;
+  background-color: #b27300;
+  text-align: center;
+}
+
+.center-flag {
+  position: absolute;
+  width: 100%;
+  top: 15%;
+  margin: auto;
+  padding: 0px;
+  background-color: transparent;
+  text-align: center;
+}
+
+.progress-bar {
+  position: relative;
+  width: 50%;
+  padding: 0px;
+  background-color: grey;}

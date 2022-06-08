@@ -1,0 +1,31 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# appflagquizz
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+{appflagquizz} tests your knowledge of the flags of the world.
+
+Before starting, you will be able to choose the length of the quiz.
+
+The quiz refers to the site [**https://www.monsieur-des-drapeaux.com**](https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html)
+
+## Demo
+
+```{r echo=FALSE}
+knitr::include_graphics("man/figures/home_page.jpg")
+```

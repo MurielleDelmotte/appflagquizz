@@ -1,0 +1,234 @@
+---
+title: "flat_flag.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+library(httr)
+library(rvest)
+library(dplyr)
+library(stringr)
+library(purrr)
+
+```
+
+
+# country
+
+A function that retrieves the list of countries available at the url "https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html"
+
+```{r function-country}
+#' country
+#' 
+#' a function that retrieves the list of countries available at the url "https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html"
+#'
+#' @importFrom httr GET content
+#' @importFrom rvest html_nodes html_text html_children
+#' @importFrom xml2 read_html
+#' @importFrom stringr str_split str_replace str_detect
+#' @importFrom dplyr %>% mutate filter select inner_join
+#' @importFrom glue glue
+#' @importFrom tibble tibble
+#' @return a dataframe with name country and url
+#' @export
+#'
+#' @examples
+country <- function() {
+
+      url <- GET("https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html") %>% 
+    content(as = "text", encoding = "utf-8") %>% 
+    read_html() %>% 
+    html_nodes("li") %>% 
+      html_children() 
+    
+    t1 <- url %>% 
+      html_attr("href")
+
+    t2 <- url %>% 
+      html_text()
+    
+    # country delete:
+    t3 <- url %>% 
+       html_children() %>%  
+       html_attr("class")
+    
+    t4 <- url %>% 
+       html_children() %>%  
+       html_text()
+    
+    t5 <- url %>% 
+       html_children() %>%  
+       html_attr("role")
+
+    t <-  tibble(test = t3, country = t4, test2 = t5)%>%
+      filter( is.na(test) &  is.na(test2)) %>% 
+      filter( country !="") 
+        
+     tab<- tibble(url = t1, country = t2) %>% 
+       filter(str_detect(url, pattern = "^/")) %>% 
+        filter(str_detect(url, pattern = "html$")) %>% 
+        filter( country!= "")
+     
+     tab1 <- tab %>% 
+       inner_join(t, by ="country") %>%
+       select(-test, -test2) %>% 
+        mutate(url = glue::glue("https://www.monsieur-des-drapeaux.com/{url}"))
+
+     return(tab1)
+    
+}
+```
+
+```{r examples-data_input}
+world <- country()
+head(world)
+```
+
+```{r tests-data_input}
+test_that("data_input works", {
+  expect_is(country(),"data.frame")
+})
+```
+
+## sample_country
+    
+```{r function-sample_country}
+#' sample_country
+#' 
+#' A sample of country
+#' @param list_country a dataframe of country /url
+#' @param n a positive number, the number of items to choose from.
+#' @param url_flag boolean TRUE if function must return the url of country
+#' @importFrom stringr str_to_lower str_replace_all
+#' @importFrom glue glue
+#' @importFrom httr GET status_code
+#' @importFrom dplyr %>% sample_n pull
+#' @importFrom purrr map
+#' @return list of name of a country and url of flag
+#' 
+#' @export
+sample_country <- function(list_country, n = 1, url_flag = TRUE){
+
+    if (nrow(list_country) < n){
+    stop("length of vector country < n")
+    }
+  
+status = 400
+  
+while(!all(status == 200)) {
+
+list_sample <- list()
+
+tab <- sample_n(list_country, n)
+
+list_sample[["name"]]  <- tab %>% 
+  pull(country)
+
+#print(list_sample[["name"]])
+
+if (url_flag) {
+list_sample[["url_flag"]]  <- tab %>% 
+  pull(url) %>%
+  #as.list() %>% 
+  map(~recup_url_flag(.))
+ 
+status <- list_sample[["url_flag"]]  %>% 
+  map(~status_code(GET(.))) 
+} else { 
+  list_sample[["url_flag"]]=""
+  status = 200}
+}
+return(list_sample)
+}
+```
+
+```{r example-sample_country}
+world <- country()
+sample_country(world, n=3)
+sample_country(world, n=3, url_flag = FALSE)
+```
+  
+```{r tests-sample_country}
+test_that("sample_country works", {
+  expect_true(inherits(sample_country, "function")) 
+  tbl <- tibble::tibble(url = "https://www.monsieur-des-drapeaux.com//bahamas.html",
+                 country = "Bahamas" )
+  expect_is(sample_country(tbl),"list")
+  expect_is(sample_country(tbl, url_flag = FALSE),"list")
+  expect_equal(length(sample_country(tbl)),2)
+  expect_error(sample_country(tbl,5), regexp = "length of vector country < n")
+  })
+
+```
+
+## recup_url_flag
+    
+```{r function-recup_url_flag}
+#' Recuperation url flag
+#' 
+#' Recuperation of url flag for a country
+#' @param country the name of a country
+#' @importFrom stringr str_to_lower str_replace_all str_extract
+#' @importFrom httr GET content status_code
+#' @importFrom rvest html_nodes html_attr
+#' @importFrom xml2 read_html
+#' @importFrom dplyr %>% 
+#' 
+#' @return url
+#' 
+#' @export
+recup_url_flag <- function(country){
+
+  url <- GET(country)
+  status <- url %>% 
+     status_code()
+  
+if (status != "200") {stop("url country no valide")}
+
+webpage1 <- url %>% 
+    content(as = "text", encoding = "utf-8") %>% 
+    read_html()
+
+world <- webpage1 %>%
+    html_nodes(xpath = '/html/body/div[2]/div[1]/div/div[2]/main/div/ul[2]/li[1]/div/div/h3/a') %>%
+    html_attr("href") %>% 
+    str_extract(pattern = "[0-9]+")
+
+url <- glue::glue("https://node01.flagstat.net/media/catalog/product/big/{world}.png")
+
+status <- GET(url) %>% 
+     status_code()
+
+if (status == '400') {stop("url flag no valide")}
+return(url)
+}
+```
+  
+```{r example-recup_url_flag}
+library(dplyr)
+world <- country() %>%  
+  sample_n(1) %>% 
+  pull(url)
+
+recup_url_flag(world)
+```
+  
+```{r tests-recup_url_flag}
+test_that("recup_url_flag works", {
+  expect_true(inherits(recup_url_flag, "function"))
+  
+  expect_error(recup_url_flag("https://www.monsieur-des-drapeaux.com//inconnu.html"), regexp = "url country no valide")
+})
+```
+  
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_flag.Rmd", vignette_name = "Country", check = TRUE)
+```
+
+

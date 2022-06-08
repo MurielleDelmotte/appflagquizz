@@ -1,0 +1,31 @@
+Package: appflagquizz
+Title: Flag quizz
+Version: 0.0.0.9000
+Authors@R: 
+    person("Murielle", "Delmotte", , "murielle@thinkr.fr", role = c("cre", "aut"))
+Description: A app shiny for flag quizz.
+License: GPL (>= 3)
+Imports: 
+    config (>= 0.3.1),
+    dplyr,
+    glue,
+    golem (>= 0.3.2),
+    htmltools,
+    httr,
+    purrr,
+    rvest,
+    shiny (>= 1.7.1),
+    shinyjs,
+    shinyWidgets,
+    stringr,
+    tibble,
+    xml2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
