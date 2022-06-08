@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# appflagquizz
+# appflagquizz <img src="man/figures/hex_Flag_Quizz.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 <!-- badges: end -->
