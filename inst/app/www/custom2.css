@@ -157,3 +157,7 @@ position: absolute;
   width: 50%;
   padding: 0px;
   background-color: grey;}
+  
+canvas {
+  z-index : 9000;
+}

@@ -40,9 +40,15 @@ mod_quizz_server <- function(id, rv_global ){
       
       if (rv_global$compteur >= rv_global$serie) {
 
-        showm(title = glue::glue("Vous avez {rv_global$good_answer} bonnes reponses sur {rv_global$serie}"))
-        
-        #if(rv_global$good_answer == rv_global$serie) {rv_global$confetti = TRUE}
+        showNotification(glue::glue("Vous avez {rv_global$good_answer} bonnes reponses sur {rv_global$serie}"))
+
+        if(rv_global$good_answer == rv_global$serie) {
+          
+          #rv_global$confetti = TRUE
+          
+          golem::invoke_js("confetti", TRUE)
+          
+          }
         
         #Reinit globalvariable
         rv_global$compteur = 0
@@ -73,12 +79,13 @@ mod_quizz_server <- function(id, rv_global ){
     observeEvent(input$reponse_select,{
       if (input$reponse_select == unlist(rv_global$flag_question[["name"]])) {
         
-        showm(title = "Bonne reponse")
+        showNotification("Bonne reponse")
 
         rv_global$good_answer = rv_global$good_answer +1
       } else {
         
-        showm(title = "Mauvaise reponse")
+        showNotification("Mauvaise reponse")
+
         
       }
       # on conserve en memoire les drapeaux qui ont deja ete propose

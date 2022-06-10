@@ -7,3 +7,5 @@ $run_dev.*
 ^LICENSE\.md$
 ^appflagquizz\.Rproj$
 ^README\.Rmd$
+^app\.R$
+^rsconnect$

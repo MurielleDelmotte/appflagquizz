@@ -22,8 +22,7 @@ app_ui <- function(request) {
     fluidPage(
       golem_add_external_resources(),
       useShinyjs(),
-      tags$script(type="text/javascript", src = app_sys("app/www/confetti.js")),
-      
+
       div(
         id = "accueil",
         mod_accueil_ui("accueil_1")
@@ -34,12 +33,12 @@ app_ui <- function(request) {
           mod_quizz_ui("quizz_1"),
         )
       ),
-      hidden(
-        div(
-          id = "confetti",
-          tags$script(htmlwidgets::JS('removeConfetti()'))
-        )
-      )
+      # hidden(
+      #   div(
+      #     id = "confetti",
+      #     tags$script(htmlwidgets::JS('toggleConfetti()'))
+      #   )
+      # )
     )
   )
 }
