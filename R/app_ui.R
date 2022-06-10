@@ -5,6 +5,7 @@
 #' @import shiny
 #' @import shinyjs
 #' @importFrom shinyWidgets setBackgroundImage
+#' @importFrom htmlwidgets JS
 #' @noRd
 #'
 
@@ -18,26 +19,28 @@ alignCenter <- function(el) {
 app_ui <- function(request) {
 
   tagList(
-fluidPage(
-  golem_add_external_resources(),
-
-  useShinyjs(),
-  div(
-    id = "accueil",
-      mod_accueil_ui("accueil_1")
-    ),
-  hidden(
-    div(
-      id = "game",
-      mod_quizz_ui("quizz_1")
+    fluidPage(
+      golem_add_external_resources(),
+      useShinyjs(),
+      tags$script(type="text/javascript", src = app_sys("app/www/confetti.js")),
+      
+      div(
+        id = "accueil",
+        mod_accueil_ui("accueil_1")
+      ),
+      hidden(
+        div(
+          id = "game",
+          mod_quizz_ui("quizz_1"),
+        )
+      ),
+      hidden(
+        div(
+          id = "confetti",
+          tags$script(htmlwidgets::JS('removeConfetti()'))
+        )
+      )
     )
-  )
-
-    # Leave this function for adding external resources
-
-
-
-)
   )
 }
 

@@ -5,4 +5,4 @@ default:
 production:
   app_prod: yes
 dev:
-  golem_wd: C:/Users/Murielle/Desktop/appflagquizz
+  golem_wd: C:/00_Local/Perso/appflagquizz

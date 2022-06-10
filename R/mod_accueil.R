@@ -26,8 +26,6 @@ mod_accueil_server <- function(id, rv_global){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    loc <- reactiveValues()
-
     observeEvent( input$start , {
       rv_global$start <- input$start
       rv_global$serie <- input$num
