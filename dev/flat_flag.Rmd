@@ -193,7 +193,7 @@ webpage1 <- url %>%
     read_html()
 
 world <- webpage1 %>%
-    html_nodes(xpath = '/html/body/div[2]/div[1]/div/div[2]/main/div/ul[2]/li[1]/div/div/h3/a') %>%
+    html_nodes(xpath = '/html/body/div[2]/div[1]/div/div[2]/main/ul[2]/li[1]/div/div/h3/a') %>%
     html_attr("href") %>% 
     str_extract(pattern = "[0-9]+")
 
