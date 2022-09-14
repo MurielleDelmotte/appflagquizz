@@ -23,13 +23,13 @@ A function that retrieves the list of countries available at the url "https://ww
 ```{r function-country}
 #' country
 #' 
-#' a function that retrieves the list of countries available at the url "https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html"
+#' a function that retrieves the list of countries available at the url 
+#' "https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html"
 #'
-#' @importFrom httr GET content
-#' @importFrom rvest html_nodes html_text html_children
+#' @importFrom rvest html_elements html_text html_attr
 #' @importFrom xml2 read_html
-#' @importFrom stringr str_split str_replace str_detect
-#' @importFrom dplyr %>% mutate filter select inner_join
+#' @importFrom stringr str_detect
+#' @importFrom dplyr %>% mutate filter
 #' @importFrom glue glue
 #' @importFrom tibble tibble
 #' @return a dataframe with name country and url
@@ -37,48 +37,30 @@ A function that retrieves the list of countries available at the url "https://ww
 #'
 #' @examples
 country <- function() {
+  url <- read_html("https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html") %>%
+    html_elements('li[class="clear_float"]') %>%
+    html_elements("ul") %>%
+    html_elements("li")
 
-      url <- GET("https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html") %>% 
-    content(as = "text", encoding = "utf-8") %>% 
-    read_html() %>% 
-    html_nodes("li") %>% 
-      html_children() 
-    
-    t1 <- url %>% 
-      html_attr("href")
+  # url %>%
+  #   html_elements("img") %>%
+  #   html_attr("src")
 
-    t2 <- url %>% 
-      html_text()
-    
-    # country delete:
-    t3 <- url %>% 
-       html_children() %>%  
-       html_attr("class")
-    
-    t4 <- url %>% 
-       html_children() %>%  
-       html_text()
-    
-    t5 <- url %>% 
-       html_children() %>%  
-       html_attr("role")
+  t1 <- url %>%
+    html_elements("a") %>%
+    html_attr("href") %>%
+    unique()
 
-    t <-  tibble(test = t3, country = t4, test2 = t5)%>%
-      filter( is.na(test) &  is.na(test2)) %>% 
-      filter( country !="") 
-        
-     tab<- tibble(url = t1, country = t2) %>% 
-       filter(str_detect(url, pattern = "^/")) %>% 
-        filter(str_detect(url, pattern = "html$")) %>% 
-        filter( country!= "")
-     
-     tab1 <- tab %>% 
-       inner_join(t, by ="country") %>%
-       select(-test, -test2) %>% 
-        mutate(url = glue::glue("https://www.monsieur-des-drapeaux.com/{url}"))
+  t2 <- url %>%
+    html_text()
 
-     return(tab1)
-    
+  tab <- tibble(url = t1, country = t2) %>%
+    filter(str_detect(url, pattern = "^/")) %>%
+    filter(str_detect(url, pattern = "html$")) %>%
+    filter(country != "") %>%
+    mutate(url = glue::glue("https://www.monsieur-des-drapeaux.com/{url}"))
+
+  return(tab)
 }
 ```
 
@@ -110,38 +92,34 @@ test_that("data_input works", {
 #' @return list of name of a country and url of flag
 #' 
 #' @export
-sample_country <- function(list_country, n = 1, url_flag = TRUE){
-
-    if (nrow(list_country) < n){
+sample_country <- function(list_country, n = 1, url_flag = TRUE) {
+  if (nrow(list_country) < n) {
     stop("length of vector country < n")
+  }
+
+  status <- 400
+
+  while (!all(status == 200)) {
+    list_sample <- list()
+
+    tab <- sample_n(list_country, n)
+
+    list_sample[["name"]] <- tab %>%
+      pull(country)
+
+    if (url_flag) {
+      list_sample[["url_flag"]] <- tab %>%
+        pull(url) %>%
+        map(~ recup_url_flag(.))
+
+      status <- list_sample[["url_flag"]] %>%
+        map(~ status_code(GET(.)))
+    } else {
+      list_sample[["url_flag"]] <- ""
+      status <- 200
     }
-  
-status = 400
-  
-while(!all(status == 200)) {
-
-list_sample <- list()
-
-tab <- sample_n(list_country, n)
-
-list_sample[["name"]]  <- tab %>% 
-  pull(country)
-
-#print(list_sample[["name"]])
-
-if (url_flag) {
-list_sample[["url_flag"]]  <- tab %>% 
-  pull(url) %>%
-  #as.list() %>% 
-  map(~recup_url_flag(.))
- 
-status <- list_sample[["url_flag"]]  %>% 
-  map(~status_code(GET(.))) 
-} else { 
-  list_sample[["url_flag"]]=""
-  status = 200}
-}
-return(list_sample)
+  }
+  return(list_sample)
 }
 ```
 
@@ -171,39 +149,42 @@ test_that("sample_country works", {
 #' 
 #' Recuperation of url flag for a country
 #' @param country the name of a country
-#' @importFrom stringr str_to_lower str_replace_all str_extract
-#' @importFrom httr GET content status_code
-#' @importFrom rvest html_nodes html_attr
+#' @importFrom stringr str_extract
+#' @importFrom httr GET status_code
+#' @importFrom rvest html_elements html_attr
 #' @importFrom xml2 read_html
+#' @importFrom purrr pluck
 #' @importFrom dplyr %>% 
 #' 
 #' @return url
 #' 
 #' @export
-recup_url_flag <- function(country){
-
+recup_url_flag <- function(country) {
   url <- GET(country)
-  status <- url %>% 
-     status_code()
-  
-if (status != "200") {stop("url country no valide")}
+  status <- url %>%
+    status_code()
 
-webpage1 <- url %>% 
-    content(as = "text", encoding = "utf-8") %>% 
-    read_html()
+  if (status != "200") {
+    stop("url country no valide")
+  }
 
-world <- webpage1 %>%
-    html_nodes(xpath = '/html/body/div[2]/div[1]/div/div[2]/main/ul[2]/li[1]/div/div/h3/a') %>%
-    html_attr("href") %>% 
+  webpage1 <- read_html(url)
+
+  world <- webpage1 %>%
+    html_elements('a[class="block product-name"]') %>%
+    purrr::pluck(1) %>%
+    html_attr("href") %>%
     str_extract(pattern = "[0-9]+")
 
-url <- glue::glue("https://node01.flagstat.net/media/catalog/product/big/{world}.png")
+  url <- glue::glue("https://node01.flagstat.net/media/catalog/product/big/{world}.png")
 
-status <- GET(url) %>% 
-     status_code()
+  status <- GET(url) %>%
+    status_code()
 
-if (status == '400') {stop("url flag no valide")}
-return(url)
+  if (status == "400") {
+    stop("url flag no valide")
+  }
+  return(url)
 }
 ```
   

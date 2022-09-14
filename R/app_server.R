@@ -14,7 +14,7 @@ app_server <- function(input, output, session) {
 
   global <- reactiveValues(
     world = w,
-    flag_question = sample_country(w,1, url_flag = TRUE),
+    flag_question = sample_country(list_country = w, n = 1, url_flag = TRUE),
     flag_memory = tibble(name = NULL),
     compteur = 0,
     good_answer = 0,
