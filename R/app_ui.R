@@ -32,13 +32,7 @@ app_ui <- function(request) {
           id = "game",
           mod_quizz_ui("quizz_1"),
         )
-      ),
-      # hidden(
-      #   div(
-      #     id = "confetti",
-      #     tags$script(htmlwidgets::JS('toggleConfetti()'))
-      #   )
-      # )
+      )
     )
   )
 }
