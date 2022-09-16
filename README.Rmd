@@ -20,11 +20,26 @@ knitr::opts_chunk$set(
 
 {appflagquizz} tests your knowledge of the flags of the world.
 
-Before starting, you will be able to choose the length of the quiz.
-
 The quiz refers to the site [**https://www.monsieur-des-drapeaux.com**](https://www.monsieur-des-drapeaux.com/drapeaux-du-monde.html)
 
+## How to install
+
+```{r, eval = FALSE}
+# Install and load {appflagquizz} package
+# install.packages("remotes")
+remotes::install_github("MurielleDelmotte/appflagquizz")
+library(appflagquizz)
+```
+
+## How to run the app
+
+```{r, eval = FALSE}
+appflagquizz::run_app()
+```
+
 ## Demo
+
+Before starting, you will be able to choose the length of the quiz.
 
 ```{r echo=FALSE}
 knitr::include_graphics("man/figures/home_page.jpg")
